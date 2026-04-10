@@ -1,3 +1,5 @@
 streamlit
 feedparser
 cloudscraper
+Pillow
+pytz
