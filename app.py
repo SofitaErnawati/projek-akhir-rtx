@@ -3,6 +3,7 @@ import backend as api
 import config
 import datetime
 import time
+import pytz
 from PIL import Image
 
 try:
@@ -19,7 +20,8 @@ def get_waktu_sekarang():
         "Thursday": "Kamis", "Friday": "Jumat",
         "Saturday": "Sabtu", "Sunday": "Minggu"
     }
-    sekarang = datetime.datetime.now()
+    tz_jakarta = pytz.timezone('Asia/Jakarta')
+    sekarang = datetime.datetime.now(tz_jakarta)
     nama_hari = hari_dict[sekarang.strftime("%A")]
     return sekarang.strftime(f"{nama_hari}, %d %B %Y | %H:%M:%S WIB")
 
@@ -51,7 +53,7 @@ if not st.session_state.app_ready:
     st.rerun()
 
 if st.session_state.app_ready:
-    st.markdown('<div class="main-header"> USM TV News</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-header"> USM TV RTX</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="time-display">🕒 {get_waktu_sekarang()}</div>', unsafe_allow_html=True)
 
     if 'data_berita' not in st.session_state:
@@ -105,9 +107,12 @@ if st.session_state.app_ready:
             st.subheader("Output Naskah RTX")
             st.code(rtx_final, language="text")
             
+            tz_jakarta = pytz.timezone('Asia/Jakarta')
+            file_time = datetime.datetime.now(tz_jakarta).strftime('%d%m%y_%H%M')
+            
             st.download_button(
                 label="Download Naskah (.txt)",
                 data=rtx_final,
-                file_name=f"RTX_USMTV_{datetime.datetime.now().strftime('%d%m%y_%H%M')}.txt",
+                file_name=f"RTX_USMTV_{file_time}.txt",
                 mime="text/plain"
             )
